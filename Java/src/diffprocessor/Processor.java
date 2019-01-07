@@ -6,9 +6,43 @@ package diffprocessor;
 public class Processor {
     public Processor(long limit) {
         // TODO: initialize.
+        // in my implementation there is no need to store limit
     }
 
-    public void doProcess(SortedLimitedList<Double> mustBeEqualTo, SortedLimitedList<Double> expectedOutput) {
+    public void doProcess(SortedLimitedList<Double> mustBeEqualTo, SortedLimitedList<Double> expectedOutput) throws Exception {
+        var firstListIterator = mustBeEqualTo.getFirst();
+        var secondListIterator = expectedOutput.getFirst();
+
+        while (firstListIterator != null) {
+            while (secondListIterator != null && secondListIterator.getValue().compareTo(firstListIterator.getValue()) < 0) {
+                secondListIterator = secondListIterator.getNext();
+            }
+            var oldIterator = firstListIterator;
+            firstListIterator = firstListIterator.getNext();
+            if (secondListIterator == null || !secondListIterator.getValue().equals(oldIterator.getValue())) {
+                mustBeEqualTo.remove(oldIterator);
+            } else {
+                secondListIterator = secondListIterator.getNext();
+            }
+        }
+
+        firstListIterator = mustBeEqualTo.getFirst();
+        secondListIterator = expectedOutput.getFirst();
+        while (secondListIterator != null) {
+            if (firstListIterator != null && secondListIterator.getValue().compareTo(firstListIterator.getValue()) < 0) {
+                mustBeEqualTo.addBefore(firstListIterator, secondListIterator.getValue());
+                secondListIterator = secondListIterator.getNext();
+                continue;
+            }
+            if (firstListIterator != null) {
+                firstListIterator = firstListIterator.getNext();
+                secondListIterator = secondListIterator.getNext();
+            } else {
+                mustBeEqualTo.addLast(secondListIterator.getValue());
+                secondListIterator = secondListIterator.getNext();
+            }
+        }
+
         // TODO: make "mustBeEqualTo" list equal to "expectedOutput".
         // 0. Processor will be created once and then will be used billion times.
         // 1. Use methods: AddFirst, AddLast, AddBefore, AddAfter, Remove to modify list.

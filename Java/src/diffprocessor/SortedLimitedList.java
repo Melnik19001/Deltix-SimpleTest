@@ -1,7 +1,4 @@
 package diffprocessor;
- 
-import sun.plugin.dom.exception.InvalidStateException;
- 
 import java.util.List;
  
 /**
@@ -53,14 +50,14 @@ public class SortedLimitedList<T extends Comparable<T>> {
         freePool = entry;
     }
  
-    protected void check(Entry<T> entry) {
+    protected void check(Entry<T> entry) throws Exception {
         Entry<T> before = entry.previous;
         if (before != null && before.value.compareTo(entry.value) > 0)
-            throw new InvalidStateException("List not sorted");
+            throw new Exception("List not sorted");
  
         Entry<T> after = entry.next;
         if (after != null && after.value.compareTo(entry.value) < 0)
-            throw new InvalidStateException("List not sorted");
+            throw new Exception("List not sorted");
     }
  
     public SortedLimitedList(int limit) {
@@ -77,14 +74,14 @@ public class SortedLimitedList<T extends Comparable<T>> {
         }
     }
  
-    public void fromArray(T[] array) {
+    public void fromArray(T[] array) throws Exception {
         clear();
         for (int i = 0; i < array.length; ++i)
             addLast(array[i]);
         performedOperations = 0;
     }
  
-    public void fromList(List<T> array) {
+    public void fromList(List<T> array) throws Exception {
         clear();
         for (int i = 0; i < array.size(); ++i)
             addLast(array.get(i));
@@ -108,7 +105,7 @@ public class SortedLimitedList<T extends Comparable<T>> {
         return builder.toString();
     }
  
-    public void addAfter(Entry<T> after, T value) {
+    public void addAfter(Entry<T> after, T value) throws Exception {
         if (after == null)
             addLast(value);
         else
@@ -131,7 +128,7 @@ public class SortedLimitedList<T extends Comparable<T>> {
         }
     }
  
-    public void addBefore(Entry<T> before, T value) {
+    public void addBefore(Entry<T> before, T value) throws Exception {
         if (before == null)
             addFirst(value);
         else
@@ -154,7 +151,7 @@ public class SortedLimitedList<T extends Comparable<T>> {
         }
     }
  
-    public void addLast(T value) {
+    public void addLast(T value) throws Exception {
         Entry<T> entry = allocate();
  
         entry.value = value;
@@ -172,7 +169,7 @@ public class SortedLimitedList<T extends Comparable<T>> {
         check(entry);
     }
  
-    public void addFirst(T value) {
+    public void addFirst(T value) throws Exception {
         Entry<T> entry = allocate();
  
         entry.value = value;
